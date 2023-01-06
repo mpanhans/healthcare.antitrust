@@ -31,7 +31,11 @@ devtools::install_github("mpanhans/healthcare.antitrust")
 
 ## Example
 
-See the package vignette for examples.
+See the package vignette for examples:
+
+``` r
+vignette("semipar_example", package = "healthcare.antitrust")
+```
 
 # Disclaimer
 
