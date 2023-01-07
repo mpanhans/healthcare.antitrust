@@ -5,18 +5,18 @@
 \title{Willingness-to-Pay Calculator}
 \usage{
 wtp_calc(
-  D,
+  data,
   cell = "cell",
   sys_id = "sys_id",
   party_ind = "party_ind",
-  adm = "adm",
+  count = "count",
   weight = "weight",
   dropDegenerateCell = TRUE
 )
 }
 \arguments{
-\item{D}{Dataset of hospital discharges. Required variables:
-\code{cell}, \code{sys_id}, \code{party_ind}, \code{adm}, and
+\item{data}{Dataset of hospital discharges. Required variables:
+\code{cell}, \code{sys_id}, \code{party_ind}, \code{count}, and
 \code{weight}. Use other function arguments to
 indicate alternative variable names to the defaul names.}
 
@@ -31,7 +31,7 @@ Default variable name is \code{sys_id}.}
 party from which diversions should be calculated. Default variable
 name is \code{party_ind}.}
 
-\item{adm}{Name of variable indicating the number of admissions
+\item{count}{Name of variable indicating the number of admissions
 represented by the observation. Set = 1 for every row if each
 observation represents one admission.}
 

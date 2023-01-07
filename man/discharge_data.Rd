@@ -4,7 +4,8 @@
 \name{discharge_data}
 \alias{discharge_data}
 \title{A simulated dataset of hospital discharges}
-\format{A data frame with 1,200 rows (one for each discharge)
+\format{
+A data frame with 1,200 rows (one for each discharge)
 and 7 variables:
 \describe{
   \item{drg}{diagnosis related group (drg) code for the admission}
@@ -15,7 +16,8 @@ and 7 variables:
   \item{sys_id}{system identifier}
   \item{system}{system name}
 
-}}
+}
+}
 \source{
 Created as part of healthcare.antitrust package.
 }

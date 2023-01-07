@@ -4,38 +4,42 @@
 \alias{cell_defn}
 \title{Allocate Observations to Cells}
 \usage{
-cell_defn(D, s_min, layers, adm = "adm")
+cell_defn(data, min_size, layers, count = "count")
 }
 \arguments{
-\item{D}{Dataset of discharges.}
+\item{data}{Dataset of discharges.}
 
-\item{s_min}{Minimize cell size.}
+\item{min_size}{Minimize cell size.}
 
 \item{layers}{A list of lists. Each layer is a list of the variables
 on which observations will be allocated to cells. The layers should
-be ordered in decreasing refinement, so that observations not allocated
-to a cell meeting the minimum size threshold can be allocated by a
-more coase layer.}
+be ordered in decreasing refinement, so that observations not assigned
+to a cell meeting the minimum size threshold can be assigned by a
+more coarse layer.}
 
-\item{adm}{Name of variable which indicates the number of admissions
-represented by an observation. Default variable name is \code{adm}.}
+\item{count}{Name of variable which indicates the number of admissions
+represented by an observation. Default variable name is \code{count}.}
 }
 \description{
-Take a dataset of hospital discharges, and allocate them to cells that
+Take a dataset of hospital discharges, and assigns them to cells that
 meet a minimum threshold cell size.
 }
 \details{
-The output is a list of datasets. The first item in the list
-is the original dataset, with observations allocated to cells. The
+The output is a list of data frames. The first item in the list
+is the original data frame, with observations assigned to cells. The
 cells are designated by the variable \code{cell}, and the layer number in
-which the observation is allocated to the cell is given by the variable
-\code{cell_type}. The second item in the output list is a dataset of the
+which the observation is assigned to the cell is given by the variable
+\code{cell_type}. The second item in the output list is a data frame of the
 unassigned observations.
 
-If the variable \code{adm} is not supplied, the function will assume that
-each observation represents one admission, and a variable \code{adm} will
-be created in the output dataset to indicate this.
+If the variable \code{count} is not available, the function will assume that
+each observation represents one admission, and a variable \code{count} will
+be created in the output data frame to indicate this.
 
+When assigning observations to cells in a given layer, this function
+only assigns observations that have not been previously assigned in a
+finer layer. That is, the function assigns observations without
+replacement. Assignment with replacement is currently not supported.
 
 For more details see the example vignette by typing:
 \code{vignette("semipar_example", package = "healthcare.antitrust")}

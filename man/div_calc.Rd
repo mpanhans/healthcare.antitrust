@@ -5,21 +5,21 @@
 \title{Diversion Ratio Calculator}
 \usage{
 div_calc(
-  D,
+  data,
   cell = "cell",
   hosp_id = "hosp_id",
   hospital = "hospital",
   sys_id = "sys_id",
   party_ind = "party_ind",
-  adm = "adm",
+  count = "count",
   dropDegenerateCell = TRUE
 )
 }
 \arguments{
-\item{D}{Dataset of hospital discharges, with required variables:
+\item{data}{Dataset of hospital discharges, with required variables:
 \code{cell}, \code{hosp_id}, \code{hospital}, \code{sys_id},
-\code{party_ind}, \code{adm}. Use other function arguments to
-indicate alternative variable names to the defaul names.}
+\code{party_ind}, \code{count}. Use other function arguments to
+indicate alternative variable names to the default names.}
 
 \item{cell}{Name of variable specifying cell to which each observation
 has been allocated. Default variable name is \code{cell}. Can be
@@ -38,7 +38,7 @@ Default variable name is \code{sys_id}.}
 merging party from which diversions should be calculated. Default
 variable name is \code{party_ind}.}
 
-\item{adm}{Name of variable indicating the number of admissions
+\item{count}{Name of variable indicating the number of admissions
 represented by the observation. Set = 1 for every row if each
 observation represents one admission.}
 
