@@ -77,6 +77,7 @@ div_calc <- function(data,
   # To address check() NOTEs
   #N_h <- hosp_id <- hospital <- party_sys_id <- sys_id <- NULL
   N_h <- NULL
+  party_sys_id <- NULL
 
   check <- unique(data[c(hosp_id,hospital)])
   if (length(unique(check$hosp_id)) != length(check$hosp_id)) {warning('Error: hosp_id associated with multiple hospital names')}
