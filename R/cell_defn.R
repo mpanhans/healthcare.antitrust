@@ -9,7 +9,7 @@
 #'   on which observations will be allocated to cells. The layers should
 #'   be ordered in decreasing refinement, so that observations not assigned
 #'   to a cell meeting the minimum size threshold can be assigned by a
-#'   more coase layer.
+#'   more coarse layer.
 #' @param count Name of variable which indicates the number of admissions
 #'   represented by an observation. Default variable name is \code{count}.
 #'
