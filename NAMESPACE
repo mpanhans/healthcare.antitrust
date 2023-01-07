@@ -3,5 +3,6 @@
 export(cell_defn)
 export(div_calc)
 export(wtp_calc)
+importFrom(methods,is)
 importFrom(stats,aggregate)
 importFrom(stats,ave)
