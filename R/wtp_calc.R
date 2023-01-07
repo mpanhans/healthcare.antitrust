@@ -2,8 +2,8 @@
 #'
 #' This function calculates the system-level Willingness-To-Pay.
 #'
-#' @param D Dataset of hospital discharges. Required variables:
-#'   \code{cell}, \code{sys_id}, \code{party_ind}, \code{adm}, and
+#' @param data Dataset of hospital discharges. Required variables:
+#'   \code{cell}, \code{sys_id}, \code{party_ind}, \code{count}, and
 #'   \code{weight}. Use other function arguments to
 #'   indicate alternative variable names to the defaul names.
 #' @param cell Name of variable specifying cell to which each observation
@@ -14,7 +14,7 @@
 #' @param party_ind Name of indicator variable for whether hospital is a
 #'   party from which diversions should be calculated. Default variable
 #'   name is \code{party_ind}.
-#' @param adm Name of variable indicating the number of admissions
+#' @param count Name of variable indicating the number of admissions
 #'   represented by the observation. Set = 1 for every row if each
 #'   observation represents one admission.
 #' @param weight The designated DRG weight of admission; =1 if
@@ -51,30 +51,30 @@
 # MAYBE add system id to the output?
 # Also I think party_ind is not really used, remove as input?
 
-wtp_calc <- function(D,
+wtp_calc <- function(data,
                      cell = "cell",
                      sys_id = "sys_id",
                      party_ind = "party_ind",
-                     adm = "adm",
+                     count = "count",
                      weight = "weight",
                      dropDegenerateCell = TRUE) {
 
   ## allow for generic variable names. old. Now [] instead of $
-  #names(D)[names(D) == cell] <- "cell"
-  #names(D)[names(D) == sys_id] <- "sys_id"
-  #names(D)[names(D) == party_ind] <- "party_ind"
-  #names(D)[names(D) == adm] <- "adm"
+  #names(data)[names(data) == cell] <- "cell"
+  #names(data)[names(data) == sys_id] <- "sys_id"
+  #names(data)[names(data) == party_ind] <- "party_ind"
+  #names(data)[names(data) == count] <- "count"
 
   ## allow weight to be named or, if missing, set = 1.
   ## Next two lines were old version, now using [] instead of $
-  #names(D)[names(D) == weight] <- "weight"
-  #if (!"weight" %in% names(D)) { D$weight  <- 1}
-  if (! weight %in% names(D)) { D$weight  <- 1}
+  #names(data)[names(data) == weight] <- "weight"
+  #if (!"weight" %in% names(data)) { data$weight  <- 1}
+  if (! weight %in% names(data)) { data$weight  <- 1}
 
-  #D$totalweight <- D$weight*D$adm  # in case some obs are aggregated admissions
-  D$totalweight <- D[[weight]]*D[[adm]]  # in case some obs are aggregated admissions
+  #data$totalweight <- data$weight*data$count  # in case some obs are aggregated admissions
+  data$totalweight <- data[[weight]]*data[[count]]  # in case some obs are aggregated admissions
 
-  y_cell <- aggregate(list(N_s=D[[adm]], wt = D$totalweight),by=list(cell=D[[cell]], sys_id=D[[sys_id]],party=D[[party_ind]]),sum)
+  y_cell <- aggregate(list(N_s=data[[count]], wt = data$totalweight),by=list(cell=data[[cell]], sys_id=data[[sys_id]],party=data[[party_ind]]),sum)
 
   y_cell <- y_cell[order(y_cell$cell,y_cell$sys_id),]
 
@@ -102,7 +102,7 @@ wtp_calc <- function(D,
   #names(y)[names(y) == "cell"] <- cell
   #names(y)[names(y) == "sys_id"] <- sys_id
   #names(y)[names(y) == "party_ind"] <- party_ind
-  #names(y)[names(y) == "adm"] <- adm
+  #names(y)[names(y) == "count"] <- count
 
   return(y)
 }
