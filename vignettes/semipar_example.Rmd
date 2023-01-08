@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette shows how to use healthcare.antitrust to implement the semiparametric demand estimation technique developed in Raval, Rosenbaum, and Tenn (2017) "A Semiparametric Discrete Choice Model: An Application to Hospital Mergers" <doi:10.1111/ecin.12454>. This model is useful to estimate "diversion ratios" which are used to assess substitutability between merging parties' products in antitrust analysis.
+This vignette shows how to use healthcare.antitrust to implement the semiparametric demand estimation technique developed in Raval, Rosenbaum, and Tenn (2017) "A Semiparametric Discrete Choice Model: An Application to Hospital Mergers" <https://doi.org/10.1111/ecin.12454>. This model is useful to estimate "diversion ratios" which are used to assess substitutability between merging parties' products in antitrust analysis.
 
 The method is illustrated using a simulated dataset of hospital discharges that is included with the healthcare.antitrust package. This simulated dataset mimics the basic structure of real hospital discharge data, with each observation including a hospital identifier and patient characteristics (DRG diagnosis code, patient age, and patient zip code of residence). The data includes 1,200 discharges from eight hospitals. 
 
