@@ -39,18 +39,18 @@ list1 <- c("drg","age","zip5")
 layers <- list(list1)
 ```
 
-A minimum cell size threshold also needs to be set. Observations will only be assigned to a cell if that cell includes at least the minimum threshold number of observations. Let's set the minimum size to 15:
+A minimum cell size threshold also needs to be set. Observations will be assigned to a cell only if that cell includes at least the minimum threshold number of observations. Let's set the minimum size to 15:
 ```{r}
 th <- 15
 ```
 
-Then use `cell_defn` to allocate observations to cells, based on the variables in the layer. The one variable that needs to be included in the dataframe is a variable specifying the number of admissions represented by each observation. By default, this variable name is `count`, and if present the function `cell_defn` will use it as the admission count. Alternatively, another variable can be indicated as the admission count variable. If no variable is specified as the admission count and `count` is not present in the dataframe, `cell_defn` will assume each observation represents one admission and create a variable `count` always equal to one. We will go ahead and create the variable in our dataframe, and then run `cell_defn`.
+Then use `cell_defn` to allocate observations to cells, based on the variables in the layer. The one variable that needs to be included in the dataframe is a variable specifying the number of admissions represented by each observation. By default, this variable name is `count`, and if present the function `cell_defn` will use it as the admission count. Alternatively, another variable can be indicated as the count variable. If no variable is specified as the count and `count` is not present in the dataframe, `cell_defn` will assume each observation represents one admission and create a variable `count` always equal to one. We will go ahead and create the variable in our dataframe, and then run `cell_defn`.
 ```{r}
 discharge_data$count <- 1
 outList <- cell_defn(discharge_data,th,layers)
 ```
 
-The `cell_defn` function prints a message indicating the number of obervations assigned to cells, and also returns a list. The first item in the return list is a new dataset that contains the observations that have been allocated to a cell, as well as their assignment.
+The `cell_defn` function prints a message indicating the number of observations assigned to cells, and also returns a list. The first item in the return list is a new dataset that contains the observations that have been allocated to a cell, as well as their assignment.
 
 ```{r}
 D0 <- outList$assigned
@@ -58,9 +58,9 @@ print(nrow(D0))
 print(nrow(discharge_data))
 ```
 
-The new dataset has `nrow(D0)` observations. `cell_defn` stated that it excluded some observations, those that were not allocated to a cell that met the minimum size threshold. The number of excluded observations added to the number of observations in the new dataset equals the number of observations in the original dataset. A data frame of unassigned observations is the second item in the return list and can be accessed with `outList$unassigned`.
+The new dataset has `nrow(D0)` observations. `cell_defn` stated that it excluded some observations, those that were not allocated to a cell that met the minimum size threshold. The number of unassigned observations added to the number of assigned observations in the new dataset equals the number of observations in the original dataset. A data frame of unassigned observations is the second item in the return list and can be accessed with `outList$unassigned`.
 
-Because observations are not all assigned to a cell, it is useful to specify several "layers" of variables in order to assign observations to cells. Using a more coarse set of variables will assign more observations, since the cells will be larger and more likely to exceed the minimum size threshold. But finer layers allow one to better account for heterogeneity in preferences across different types of people. That is why `cell_defn` allows for input of many layers, and they should be ordered by increasing coarseness. This will assign observations by more granular categories at first, and then for remaining unassigned individuals, they will be assigned into more coarse groupings.  
+Because some observations may not be assigned to a cell, it is useful to specify several "layers" of variables in order to assign observations to cells. Using a more coarse set of variables will assign more observations, since the cells will be larger and more likely to exceed the minimum size threshold. But finer layers allow one to better account for heterogeneity in preferences across different types of people. That is why `cell_defn` allows for input of many layers, and they should be ordered by increasing coarseness. This will assign observations by more granular categories at first, and then for remaining unassigned individuals, they will be assigned into more coarse groupings.  
 
 Instead of using only one layer, we can modify our example to instead use three layers to define cells. Adding more coarse layers will allow more observations to be allocated to cells that meet the minimum size threshold. Let's add layers that use three digit zip codes instead of the five digit zip code.
 
@@ -108,9 +108,9 @@ Now we can calculate diversions using the `div_calc` function.
 out <- div_calc(D0)
 ```
 
-The function prints the `hosp_id` of each hospital for which diversion is calculated. 
+<!-- The function prints the `hosp_id` of each hospital for which diversion is calculated. -->
 
-The function `div_calc` outputs two objects, a matrix of hospital-level diversions and a matrix aggregated to system-level diversions. The hospital-level matrix gives diversions from each of the merging hospitals to all other hospitals. The diversions should sum to 1. We can verify that our diversions sum to one for Hospital 1:
+The function `div_calc` returns a list with two components, the first is a matrix of hospital-level diversions and the second is a matrix aggregated to system-level diversions. The hospital-level matrix gives diversions from each of the merging hospitals to all other hospitals. The diversions should sum to 1. We can verify that our diversions sum to one for Hospital 1:
 
 ```{r}
 divratio_hosp <- out$hosp_level
