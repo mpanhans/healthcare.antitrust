@@ -23,17 +23,19 @@
 #'   represented by the observation. Set = 1 for every row if each
 #'   observation represents one admission.
 #' @param dropDegenerateCell logical; specifies how to treat cells with a
-#' 100\% within-system share. If TRUE, observations in degenerate, 100\% share
-#' cells will be ignored in the diversion ratio calculation. If FALSE,
-#' any such individuals will be assigned to the outside option, but still
-#' included in the denominator, so that the inside-option diversion will total
-#' less than 100\%.
+#'   100 percent within-system share. If TRUE, observations in degenerate, 100
+#'   percent share cells will be ignored in the diversion ratio calculation.
+#'   If FALSE, any such individuals will be assigned to the outside option,
+#'   but still included in the denominator, so that the inside-option diversion
+#'   will total less than 100  percent.
 #'
-#' @details Two objects are given as output. The first is a matrix giving
-#'  hospital-level diversions from party hospitals to all other hospitals.
-#'  The second object is a matrix that aggregates party hospitals to
-#'  systems, thus giving diversions from party systems to all other
-#'  hospitals. For system-to-system diversions, set \code{hosp_id} and
+#' @returns A list with two components. The first component, `hosp_level`,
+#'  is a matrix giving hospital-level diversions from party hospitals to
+#'  all other hospitals. The second object, `sys_level`, is a matrix that
+#'  aggregates party hospitals to systems, thus giving diversions from party
+#'  systems to all other hospitals.
+#'
+#' @details For system-to-system diversions, set \code{hosp_id} and
 #'  \code{hospital} equal to corresponding system-level identifiers.
 #'  Patients are not allowed to divert to within-system alternative
 #'  hospitals.

@@ -13,13 +13,15 @@
 #' @param count Name of variable which indicates the number of admissions
 #'   represented by an observation. Default variable name is \code{count}.
 #'
-#' @details The output is a list of data frames. The first item in the list
-#' is the original data frame, with observations assigned to cells. The
-#' cells are designated by the variable \code{cell}, and the layer number in
+#' @returns A list of data frames. The first component in the list, `assigned`,
+#' is the original data frame, with observations assigned to cells, and
+#' excluding observations that were not assigned. The assigned cells are
+#' designated by the variable \code{cell}, and the layer number in
 #' which the observation is assigned to the cell is given by the variable
-#' \code{cell_type}. The second item in the output list is a data frame of the
-#' unassigned observations.
+#' \code{cell_type}. The second component of the list, `unassigned`, is a
+#' data frame with the unassigned observations.
 #'
+#' @details
 #' If the variable \code{count} is not available, the function will assume that
 #' each observation represents one admission, and a variable \code{count} will
 #' be created in the output data frame to indicate this.
@@ -128,7 +130,7 @@ cell_defn <- function(data, min_size, layers, count = "count") {
   #names(DD)[names(DD) == "count"] <- count
 
   # Return List of Outputs
-  newList <- list("dataset" = D0, "unassigned" = DD)
+  newList <- list("assigned" = D0, "unassigned" = DD)
   return(newList)
 }
 

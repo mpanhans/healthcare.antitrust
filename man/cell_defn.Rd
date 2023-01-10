@@ -20,18 +20,20 @@ more coarse layer.}
 \item{count}{Name of variable which indicates the number of admissions
 represented by an observation. Default variable name is \code{count}.}
 }
+\value{
+A list of data frames. The first component in the list, \code{assigned},
+is the original data frame, with observations assigned to cells, and
+excluding observations that were not assigned. The assigned cells are
+designated by the variable \code{cell}, and the layer number in
+which the observation is assigned to the cell is given by the variable
+\code{cell_type}. The second component of the list, \code{unassigned}, is a
+data frame with the unassigned observations.
+}
 \description{
 Take a dataset of hospital discharges, and assigns them to cells that
 meet a minimum threshold cell size.
 }
 \details{
-The output is a list of data frames. The first item in the list
-is the original data frame, with observations assigned to cells. The
-cells are designated by the variable \code{cell}, and the layer number in
-which the observation is assigned to the cell is given by the variable
-\code{cell_type}. The second item in the output list is a data frame of the
-unassigned observations.
-
 If the variable \code{count} is not available, the function will assume that
 each observation represents one admission, and a variable \code{count} will
 be created in the output data frame to indicate this.

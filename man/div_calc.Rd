@@ -43,25 +43,28 @@ represented by the observation. Set = 1 for every row if each
 observation represents one admission.}
 
 \item{dropDegenerateCell}{logical; specifies how to treat cells with a
-100\% within-system share. If TRUE, observations in degenerate, 100\% share
-cells will be ignored in the diversion ratio calculation. If FALSE,
-any such individuals will be assigned to the outside option, but still
-included in the denominator, so that the inside-option diversion will total
-less than 100\%.}
+100 percent within-system share. If TRUE, observations in degenerate, 100
+percent share cells will be ignored in the diversion ratio calculation.
+If FALSE, any such individuals will be assigned to the outside option,
+but still included in the denominator, so that the inside-option diversion
+will total less than 100  percent.}
+}
+\value{
+A list with two components. The first component, \code{hosp_level},
+is a matrix giving hospital-level diversions from party hospitals to
+all other hospitals. The second object, \code{sys_level}, is a matrix that
+aggregates party hospitals to systems, thus giving diversions from party
+systems to all other hospitals.
 }
 \description{
 Calculates hospital-level diversion ratios, once cells have been
 defined.
 }
 \details{
-Two objects are given as output. The first is a matrix giving
- hospital-level diversions from party hospitals to all other hospitals.
- The second object is a matrix that aggregates party hospitals to
- systems, thus giving diversions from party systems to all other
- hospitals. For system-to-system diversions, set \code{hosp_id} and
- \code{hospital} equal to corresponding system-level identifiers.
- Patients are not allowed to divert to within-system alternative
- hospitals.
+For system-to-system diversions, set \code{hosp_id} and
+\code{hospital} equal to corresponding system-level identifiers.
+Patients are not allowed to divert to within-system alternative
+hospitals.
 
 For more details see the example vignette by typing:
 \code{vignette("semipar_example", package = "healthcare.antitrust")}

@@ -35,29 +35,35 @@ name is \code{party_ind}.}
 represented by the observation. Set = 1 for every row if each
 observation represents one admission.}
 
-\item{weight}{The designated DRG weight of admission; =1 if
+\item{weight}{The designated weight of admission; =1 if
 observations should be equally weighted.}
 
 \item{dropDegenerateCell}{logical; specifies how to treat cells with a
-100\% within-system share. If TRUE, observations in degenerate, 100\% share
-cells will be ignored in the WTP calculation. If FALSE, an adjustment
-is made where any cells with > 99\% share at a single hospital have the
-share set to 99.0\%.}
+100 percent within-system share. If TRUE, observations in degenerate,
+100 percent share cells will be ignored in the WTP calculation. If FALSE,
+an adjustment is made where any cells with > 99 percent share at a single
+hospital have the share set to 99.0 percent.}
+}
+\value{
+A data frame with the number of rows equal to the number of systems
+in the input data frame, and the following variables: \code{party} indicates
+whether the system includes party hospitals, \code{sys_id} is the system
+identifier, \code{WTP_s} is the system's WTP, \code{N_s} is the number of admission
+for the system, and \code{WTP_s_wt} is the weighted WTP for the system
+if the weight input is provided.
 }
 \description{
 This function calculates the system-level Willingness-To-Pay.
 }
 \details{
 This function calculates the system-level WTP. For use in a WTP
- simulation exercise of the "WTP/Q Method" described in Brand and Balan
- (2018) <https://doi.org/10.2139/SSRN.3153109>.
- Hospital systems need to be numbered by \code{sys_id}, with a distinct
- \code{sys_id} for each independent hospital.
+simulation exercise of the "WTP/Q Method" described in Brand and Balan
+(2018) \url{https://doi.org/10.2139/SSRN.3153109}.
+Hospital systems need to be numbered by \code{sys_id}, with a distinct
+\code{sys_id} for each independent hospital.
 
- The function outputs both weighted and unweighted WTP by system.
- For example, is it common to weight each observation by DRG weight.
- For only unweighted results, weight should be = 1 for all observations,
- then the two measures will be equivalent.
+The \code{weight} input might for example be a DRG weight for each inpatient
+hospital admission.
 
 For more details see the example vignette by typing:
 \code{vignette("semipar_example", package = "healthcare.antitrust")}
