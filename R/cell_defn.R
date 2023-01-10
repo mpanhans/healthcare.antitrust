@@ -95,7 +95,7 @@ cell_defn <- function(data, min_size, layers, count = "count") {
   D0 <- subset(DD,cell_tot >= min_size)
   DD <- subset(DD,cell_tot < min_size)
 
-  print(paste0("Layer ","1",": ",nrow(D0)," obs allocated", sep = ""))
+  message(paste0("Layer ","1",": ",nrow(D0)," obs allocated", sep = ""))
 
   # Second through L Layers
   if (L > 1) {
@@ -113,17 +113,17 @@ cell_defn <- function(data, min_size, layers, count = "count") {
 
     matched   <- subset(DD,cell_tot >= min_size)
     nomatched <- subset(DD,cell_tot < min_size)
-    print(paste0("Layer ",j,": ",nrow(matched)," obs allocated", sep = ""))
+    message(paste0("Layer ",j,": ",nrow(matched)," obs allocated", sep = ""))
 
     D0 <- rbind(D0,matched)
     DD <- nomatched
     }else{
-    print(paste0("Layer ",j,": ",0," obs allocated", sep = ""))
+      message(paste0("Layer ",j,": ",0," obs allocated", sep = ""))
     }
 
   }
   }
-  print(paste0("Number of Excluded Obs: ", nrow(DD)))
+  message(paste0("Number of Excluded Obs: ", nrow(DD)))
 
 
   #  Create a new cell ID based on combinations of 'cell' and 'cell_type'
