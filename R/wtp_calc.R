@@ -43,6 +43,20 @@
 #'
 #' For more details see the example vignette by typing:
 #' \code{vignette("semipar_example", package = "healthcare.antitrust")}
+#'
+#' @examples
+#' data(discharge_data, package = "healthcare.antitrust")
+#'
+#' list1 <- c("drg","age","zip5")
+#' layers <- list(list1)
+#' th <- 15
+#' discharge_data$count <- 1
+#'
+#' outList <- cell_defn(discharge_data,th,layers)
+#' D0 <- outList$assigned
+#'
+#' out <- wtp_calc(D0)
+#'
 #' @importFrom stats aggregate ave
 #' @export
 

@@ -69,3 +69,22 @@ hospitals.
 For more details see the example vignette by typing:
 \code{vignette("semipar_example", package = "healthcare.antitrust")}
 }
+\examples{
+data(discharge_data, package = "healthcare.antitrust")
+
+list1 <- c("drg","age","zip5")
+layers <- list(list1)
+th <- 15
+discharge_data$count <- 1
+
+outList <- cell_defn(discharge_data,th,layers)
+D0 <- outList$assigned
+
+D0$party_ind <- 0
+D0$party_ind[D0$hosp_id==1] <- 1
+D0$party_ind[D0$hosp_id==2] <- 1
+D0$party_ind[D0$hosp_id==5] <- 1
+
+out <- div_calc(D0)
+
+}
