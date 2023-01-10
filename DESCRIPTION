@@ -1,10 +1,10 @@
 Package: healthcare.antitrust
 Type: Package
-Title: Tools for Healthcare Antitrust Analysis
+Title: Healthcare Antitrust Analysis
 Version: 0.1.3
 Author: Matthew T Panhans <mpanhans@ftc.gov>
 Maintainer: Matthew T Panhans <mpanhans@gmail.com>
-Description: Tools for antitrust analysis of
+Description: Antitrust analysis of
     healthcare markets. It contains functions to implement the 
     semiparametric estimation technique described in Raval, Rosenbaum,
     and Tenn (2017) "A Semiparametric Discrete Choice Model: An Application
