@@ -149,7 +149,7 @@ div_calc <- function(data,
     system_hosp <- sort(unique(y_hosp_cell$hosp_id[y_hosp_cell$party_sys_id == m]))
 
     for (k in system_hosp) {
-      print(paste0("Hosp Id: ", k))
+      #print(paste0("Hosp Id: ", k))  # removed for CRAN, just was status update
       iter <- iter + 1
 
       y_hosp_cell$N_k <- 0
@@ -188,11 +188,10 @@ div_calc <- function(data,
       # Print flag if degenerate cells
       degenlist <- y_hosp_cell$cell[is.na(y_hosp_cell$div) & y_hosp_cell$hosp_id == k]
       if (length(degenlist) > 0) {
-        print("Note the following cells are degenerate:")
-        print(degenlist)
+        message("Note the following cells are degenerate: ",paste(degenlist, collapse = ", "))
 
         totdiv <- sum(y_hosp$div, na.rm = TRUE)
-        print(paste0("Total Diversion: ",totdiv))
+        #print(paste0("Total Diversion: ",totdiv))  # removed for CRAN, not really necessary info
       }
 
       if (iter == 1) {out <- subset(y_hosp, select=c(hosp_id,hospital,party_sys_id,sys_id,N_h))}
