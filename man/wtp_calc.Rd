@@ -58,7 +58,7 @@ This function calculates the system-level Willingness-To-Pay.
 \details{
 This function calculates the system-level WTP. For use in a WTP
 simulation exercise of the "WTP/Q Method" described in Brand and Balan
-(2018) \url{https://doi.org/10.2139/SSRN.3153109}.
+(2018) \doi{10.2139/SSRN.3153109}.
 Hospital systems need to be numbered by \code{sys_id}, with a distinct
 \code{sys_id} for each independent hospital.
 
