@@ -1,5 +1,11 @@
 ## Resubmission
-This is a resubmission. In this version I have:
+This is a second re-submission. In this version I have:
+
+* Changed the URL in wtp_calc.Rd to be \doi{} with the DOI only
+
+
+## Past Resubmission
+In the first resubmission, I have:
 
 * Removed "Tools for" from the start of the title and description.
 
@@ -9,7 +15,7 @@ This is a resubmission. In this version I have:
 
 * Added an example for each function: cell_defn, div_calc, and wtp_calc
 
-* I removed the use of print() from cell_defn.R and div_calc.R
+* Removed the use of print() from cell_defn.R and div_calc.R
 
 
 ## Test environments
