@@ -1,7 +1,7 @@
 Package: healthcare.antitrust
 Type: Package
 Title: Healthcare Antitrust Analysis
-Version: 0.1.3
+Version: 0.1.3.9000
 Authors@R: person("Matthew T", "Panhans",
   email = "mpanhans@gmail.com",
   role = c("aut", "cre"),
