@@ -13,6 +13,10 @@ technique described in Raval, Rosenbaum, and Tenn (2017) “A
 Semiparametric Discrete Choice Model: An Application to Hospital
 Mergers.”
 
+Users of the statistical software Stata can use the [Stata module
+“divratio”](https://econpapers.repec.org/software/bocbocode/S459169.htm)
+available from the SSC repository to implement many of these same tools.
+
 ## Installation
 
 You can install the released version of healthcare.antitrust from
