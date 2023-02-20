@@ -57,15 +57,18 @@ cell_defn <- function(data, min_size, layers, count = "count") {
   cell_tot <- NULL
 
   # Error checks
-  if (!is(data,"data.frame")) {warning('Input needs to be a dataframe'); stop()}
-  if (!is(min_size,"numeric")) {warning('Input min cell size needs to be numeric'); stop()}
-  if (length(min_size)!=1) {warning('Input min cell size needs to be length 1'); stop()}
-  if (!is(layers,"list")) {warning('Input layers need to be a list'); stop()}
+  if (!is(data,"data.frame")) { stop('Input needs to be a dataframe')}
+  if (!is(min_size,"numeric")) { stop('Input min cell size needs to be numeric')}
+  if (length(min_size)!=1) { stop('Input min cell size needs to be length 1')}
+  if (!is(layers,"list")) { stop('Input layers need to be a list')}
+
+  # Error checks in 0.1.3 (old)
+  #if (!is(data,"data.frame")) {warning('Input needs to be a dataframe'); stop()}
+  #if (!is(min_size,"numeric")) {warning('Input min cell size needs to be numeric'); stop()}
+  #if (length(min_size)!=1) {warning('Input min cell size needs to be length 1'); stop()}
+  #if (!is(layers,"list")) {warning('Input layers need to be a list'); stop()}
 
   ## Allow count variable name to be missing.
-  #names(data)[names(data) == count] <- "count"
-  #if (!"count" %in% names(data)) {message('Assuming one admission per row. Variable count created.'); data$count  <- 1}
-  ## above two lines were old version, now using [] instead of $
   if (! count %in% names(data)) {message('Assuming one admission per row. Variable count created.'); data$count  <- 1}
 
   cc <- c("cell","cell_type")
