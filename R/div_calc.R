@@ -87,14 +87,6 @@ div_calc <- function(data,
                      count = "count",
                      dropDegenerateCell = TRUE) {
 
-  # allow for generic variable names - old. Now use [] instead of $
-  #names(data)[names(data) == cell] <- "cell"
-  #names(data)[names(data) == hosp_id] <- "hosp_id"
-  #names(data)[names(data) == hospital] <- "hospital"
-  #names(data)[names(data) == sys_id] <- "sys_id"
-  #names(data)[names(data) == party_ind] <- "party_ind"
-  #names(data)[names(data) == count] <- "count"
-
 
   # To address check() NOTEs
   #N_h <- hosp_id <- hospital <- party_sys_id <- sys_id <- NULL
@@ -106,24 +98,16 @@ div_calc <- function(data,
   #if (length(unique(check$hospital)) != length(check$hospital)) {warning('Error: hospital name associated with multiple hosp_ids')}
 
   # Error checks
-  if (!is(data,"data.frame")) {warning('Input needs to be a dataframe'); stop()}
-  if (!is(dropDegenerateCell,"logical")) {warning('Input dropDegenerateCell needs to be a logical'); stop()}
-
-  # old Var name checks
-  #if (!"cell" %in% names(data)) {warning('Variable "cell" required in input dataset'); stop()}
-  #if (!"hosp_id" %in% names(data)) {warning('Variable "hosp_id" required in input dataset'); stop()}
-  #if (!"hospital" %in% names(data)) {warning('Variable "hospital" required in input dataset'); stop()}
-  #if (!"sys_id" %in% names(data)) {warning('Variable "sys_id" required in input dataset'); stop()}
-  #if (!"party_ind" %in% names(data)) {warning('Variable "party_ind" required in input dataset'); stop()}
-  #if (!"count" %in% names(data)) {warning('Variable "count" required in input dataset'); stop()}
+  if (!is(data,"data.frame")) { stop('Input needs to be a dataframe')}
+  if (!is(dropDegenerateCell,"logical")) { stop('Input dropDegenerateCell needs to be a logical')}
 
   # Updated var checks
-  if (! cell %in% names(data)) {warning('Variable "cell" required in input dataset'); stop()}
-  if (! hosp_id %in% names(data)) {warning('Variable "hosp_id" required in input dataset'); stop()}
-  if (! hospital %in% names(data)) {warning('Variable "hospital" required in input dataset'); stop()}
-  if (! sys_id %in% names(data)) {warning('Variable "sys_id" required in input dataset'); stop()}
-  if (! party_ind %in% names(data)) {warning('Variable "party_ind" required in input dataset'); stop()}
-  if (! count %in% names(data)) {warning('Variable "count" required in input dataset'); stop()}
+  if (! cell %in% names(data)) { stop('Variable "cell" required in input dataset')}
+  if (! hosp_id %in% names(data)) { stop('Variable "hosp_id" required in input dataset')}
+  if (! hospital %in% names(data)) { stop('Variable "hospital" required in input dataset')}
+  if (! sys_id %in% names(data)) { stop('Variable "sys_id" required in input dataset')}
+  if (! party_ind %in% names(data)) { stop('Variable "party_ind" required in input dataset')}
+  if (! count %in% names(data)) { stop('Variable "count" required in input dataset')}
 
   iter <- 0
   data$party_sys_id <- data[[party_ind]]*data[[sys_id]]
@@ -235,7 +219,6 @@ div_calc <- function(data,
   #names(out2)[names(out2) == "count"] <- count
 
   newList <- list("hosp_level" = out, "sys_level" = out2)
-  #newList <- list("hosp_level" = out)
   return(newList)
 }
 
