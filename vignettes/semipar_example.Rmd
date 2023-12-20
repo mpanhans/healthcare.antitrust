@@ -91,7 +91,7 @@ We are now able to calculate diversion ratios based on the cell definitions.
 
 Once observations have been assigned to cells, we can now calculate diversion ratios with the function `div_calc`. Within each cell $c$, the diversion from a hospital $k$ to hospital $h$ is given by $d^c_{k,h} = \frac{s^c_h}{1 - s^c_{m(k)}}$ where $s^c_h$ is the share of cell $c$ admissions to hospital $h$, and $s^c_{m(k)}$ is the share of cell $c$ admissions at hospital $k$ or any other hospital in the same system as $k$. The overall diversions are then calculated by aggregating over cells (See Raval, Rosenbaum, and Tenn (2017) for details.)
 
-The required variables in the input dataframe are `cell`, which has been defined by the `cell_defn` function, as well as hospital and system identifiers: `hosp_id`, `Hospital`, `sys_id`, and `System`. The function also requires `count`, which is created by `cell_defn` if it does not exist.
+The required variables in the input dataframe are `cell`, which has been defined by the `cell_defn` function, as well as provider and system identifiers: `provider_id`, `Provider`, `sys_id`, and `System`. The function also requires `count`, which is created by `cell_defn` if it does not exist.
 
 Finally, we need to specify an indicator for the set of hospitals we are interested in diversions among, for example the hospitals that are parties in a proposed merger. The variable to indicate such hospitals is `party_ind`, and these are the hospitals for which diversion ratios will be calculated. We are interested in studying a proposed merger including hospitals 1, 2, and 5, and so we assign them the party indicator variable.
 
@@ -105,7 +105,7 @@ D0$party_ind[D0$hosp_id==5] <- 1
 Now we can calculate diversions using the `div_calc` function.
 
 ```{r}
-out <- div_calc(D0)
+out <- div_calc(D0, provider_id = "hosp_id", provider = "hospital")
 ```
 
 <!-- The function prints the `hosp_id` of each hospital for which diversion is calculated. -->
@@ -117,10 +117,10 @@ divratio_hosp <- out$hosp_level
 sum(divratio_hosp$div_from_1, na.rm = TRUE)
 ```
 
-We can also print the hospital-level and system-level diversions.
+We can also print the provider-level and system-level diversions.
 
 ```{r}
-print(out$hosp_level)
+print(out$provider_level)
 print(out$sys_level)
 ```
 

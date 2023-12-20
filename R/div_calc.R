@@ -1,19 +1,19 @@
 #' Diversion Ratio Calculator
 #'
-#' Calculates hospital-level diversion ratios, once cells have been
+#' Calculates provider-level diversion ratios, once cells have been
 #' defined.
 #'
-#' @param data Dataset of hospital discharges, with required variables:
-#'   \code{cell}, \code{hosp_id}, \code{hospital}, \code{sys_id},
+#' @param data Dataset of patient choices, with required variables:
+#'   \code{cell}, \code{provider_id}, \code{hospital}, \code{sys_id},
 #'   \code{party_ind}, \code{count}. Use other function arguments to
 #'   indicate alternative variable names to the default names.
 #' @param cell Name of variable specifying cell to which each observation
 #'   has been allocated. Default variable name is \code{cell}. Can be
 #'   created by \code{cell_defn} function.
-#' @param hosp_id Name of variable specifying (numeric) hospital
-#'   identifier. Default variable name is \code{hosp_id}.
-#' @param hospital Name of variable specifying (string) hospital name.
-#'   Default variable name is \code{hospital}.
+#' @param provider_id Name of variable specifying (numeric) provider
+#'   identifier. Default variable name is \code{provider_id}.
+#' @param provider Name of variable specifying (string) provider name.
+#'   Default variable name is \code{provider}.
 #' @param sys_id Name of variable specifying (numeric) system identifier.
 #'   Default variable name is \code{sys_id}.
 #' @param party_ind Name of indicator variable for whether hospital is a
@@ -29,16 +29,16 @@
 #'   but still included in the denominator, so that the inside-option diversion
 #'   will total less than 100  percent.
 #'
-#' @returns A list with two components. The first component, `hosp_level`,
-#'  is a matrix giving hospital-level diversions from party hospitals to
-#'  all other hospitals. The second object, `sys_level`, is a matrix that
-#'  aggregates party hospitals to systems, thus giving diversions from party
-#'  systems to all other hospitals.
+#' @returns A list with two components. The first component, `provider_level`,
+#'  is a matrix giving provider-level diversions from party providers to
+#'  all other providers The second object, `sys_level`, is a matrix that
+#'  aggregates party providers to systems, thus giving diversions from party
+#'  systems to all other providers
 #'
-#' @details For system-to-system diversions, set \code{hosp_id} and
-#'  \code{hospital} equal to corresponding system-level identifiers.
-#'  Patients are not allowed to divert to within-system alternative
-#'  hospitals.
+#' @details For system-to-system diversions, set \code{provider_id} and
+#'  \code{provider} equal to corresponding system-level identifiers.
+#'  Diversions then reflect that patients are not allowed to divert to
+#'  within-system alternative providers
 #'
 #' For more details see the example vignette by typing:
 #' \code{vignette("semipar_example", package = "healthcare.antitrust")}
@@ -70,7 +70,7 @@
 ##################################################################
 # Diversion Ratio Calculator
 ##################################################################
-# Required inputs: cell, hosp_id, hospital, sys_id, system, party_ind, count
+# Required inputs: cell, provider_id, hospital, sys_id, system, party_ind, count
 # where party_ind is 1 party hospitals, zero otherwise
 # and count is the number of admissions represented by the observation. =1 for all if
 # each observation is one admissions
@@ -80,8 +80,8 @@
 
 div_calc <- function(data,
                      cell = "cell",
-                     hosp_id = "hosp_id",
-                     hospital = "hospital",
+                     provider_id = "provider_id",
+                     provider = "provider",
                      sys_id = "sys_id",
                      party_ind = "party_ind",
                      count = "count",
@@ -93,21 +93,36 @@ div_calc <- function(data,
   N_h <- NULL
   party_sys_id <- NULL
 
-  check <- unique(data[c(hosp_id,hospital)])
-  if (length(unique(check$hosp_id)) != length(check$hosp_id)) {warning('Error: hosp_id associated with multiple hospital names')}
-  #if (length(unique(check$hospital)) != length(check$hospital)) {warning('Error: hospital name associated with multiple hosp_ids')}
-
   # Error checks
   if (!is(data,"data.frame")) { stop('Input needs to be a dataframe')}
   if (!is(dropDegenerateCell,"logical")) { stop('Input dropDegenerateCell needs to be a logical')}
 
+  # Temp deprecation checks for hosp_id and provider_id. Remove this eventually.
+  # check if provider_id is missing and hosp_id is present, then rename hosp_id
+  # to provider_id and print a warning message about deprecation.
+
+  if (!("provider_id" %in% names(data)) & ("hosp_id" %in% names(data))) {
+    names(data)[names(data) == "hosp_id"] <- "provider_id"
+    warning("hosp_id variable input is deprecated. Switch var name to provider_id.")
+  }
+  if (!("provider" %in% names(data)) & ("hospital" %in% names(data))) {
+    names(data)[names(data) == "hospital"] <- "provider"
+    warning("hospital variable input is deprecated. Switch var name to provider.")
+  }
+
   # Updated var checks
   if (! cell %in% names(data)) { stop('Variable "cell" required in input dataset')}
-  if (! hosp_id %in% names(data)) { stop('Variable "hosp_id" required in input dataset')}
-  if (! hospital %in% names(data)) { stop('Variable "hospital" required in input dataset')}
+  if (! provider_id %in% names(data)) { stop('Variable "provider_id" required in input dataset')}
+  if (! provider %in% names(data)) { stop('Variable "provider" required in input dataset')}
   if (! sys_id %in% names(data)) { stop('Variable "sys_id" required in input dataset')}
   if (! party_ind %in% names(data)) { stop('Variable "party_ind" required in input dataset')}
   if (! count %in% names(data)) { stop('Variable "count" required in input dataset')}
+
+  # check provider names and id's uniquely match
+  check <- unique(data[c(provider_id,provider)])
+  if (length(unique(check$provider_id)) != length(check$provider_id)) {warning('Error: provider_id associated with multiple provider names')}
+  #if (length(unique(check$provider)) != length(check$provider)) {warning('Error: provider name associated with multiple provider_ids')}
+
 
   iter <- 0
   data$party_sys_id <- data[[party_ind]]*data[[sys_id]]
@@ -115,8 +130,8 @@ div_calc <- function(data,
 
   for (m in party_sys_list) {
     # Calculate cell-specific hospital diversion ratios
-    y_hosp_cell = aggregate(data[[count]],by=list(data[[cell]],data[[hosp_id]],data[[hospital]],data$party_sys_id),sum)
-    names(y_hosp_cell) <- c("cell","hosp_id","hospital","party_sys_id","N_h")
+    y_hosp_cell = aggregate(data[[count]],by=list(data[[cell]],data[[provider_id]],data[[provider]],data$party_sys_id),sum)
+    names(y_hosp_cell) <- c("cell","provider_id","provider","party_sys_id","N_h")
 
     y_hosp_cell$N <- ave(y_hosp_cell$N_h,y_hosp_cell$cell, FUN = sum)
     y_hosp_cell$share_h <- y_hosp_cell$N_h/y_hosp_cell$N
@@ -124,35 +139,35 @@ div_calc <- function(data,
     y_hosp_cell$share_m[y_hosp_cell$party_sys_id != m] <- 0
     y_hosp_cell$share_m <- ave(y_hosp_cell$share_m,y_hosp_cell$cell, FUN = max)
 
-    y_hosp_cell$share_h[y_hosp_cell$party_sys_id == m] <- 0 # set share to zero for system hospitals
+    y_hosp_cell$share_h[y_hosp_cell$party_sys_id == m] <- 0 # set share to zero for system providers
 
     y_hosp_cell$div <- y_hosp_cell$share_h/(1-y_hosp_cell$share_m)
 
 
     # Calculate predicted hospital-cell admissions after hospital k exclusion
-    system_hosp <- sort(unique(y_hosp_cell$hosp_id[y_hosp_cell$party_sys_id == m]))
+    system_hosp <- sort(unique(y_hosp_cell$provider_id[y_hosp_cell$party_sys_id == m]))
 
     for (k in system_hosp) {
       #print(paste0("Hosp Id: ", k))  # removed for CRAN, just was status update
       iter <- iter + 1
 
       y_hosp_cell$N_k <- 0
-      y_hosp_cell$N_k[y_hosp_cell$hosp_id == k] <- y_hosp_cell$N_h[y_hosp_cell$hosp_id == k]
+      y_hosp_cell$N_k[y_hosp_cell$provider_id == k] <- y_hosp_cell$N_h[y_hosp_cell$provider_id == k]
       y_hosp_cell$N_k <- ave(y_hosp_cell$N_k,y_hosp_cell$cell, FUN = max)
 
       y_hosp_cell$N_h_predict <- y_hosp_cell$N_h + y_hosp_cell$N_k*y_hosp_cell$div
       y_hosp_cell$N_h_predict[y_hosp_cell$party_sys_id == m] <- 0
 
       # Sum across cells
-      y_hosp = aggregate(data[[count]],by=list(data[[hosp_id]],data[[hospital]],data$party_sys_id,data[[sys_id]]),sum)
-      names(y_hosp) <- c("hosp_id","hospital","party_sys_id","sys_id","N_h")
+      y_hosp = aggregate(data[[count]],by=list(data[[provider_id]],data[[provider]],data$party_sys_id,data[[sys_id]]),sum)
+      names(y_hosp) <- c("provider_id","provider","party_sys_id","sys_id","N_h")
 
       y_hosp$N_k <- 0
-      y_hosp$N_k[y_hosp$hosp_id == k] <- y_hosp$N_h[y_hosp$hosp_id == k]
+      y_hosp$N_k[y_hosp$provider_id == k] <- y_hosp$N_h[y_hosp$provider_id == k]
       y_hosp$N_k <- max(y_hosp$N_k)
 
-      temp <- aggregate(y_hosp_cell$N_h_predict,by=list(y_hosp_cell$hosp_id),sum)
-      names(temp) <- c("hosp_id","N_h_predict")
+      temp <- aggregate(y_hosp_cell$N_h_predict,by=list(y_hosp_cell$provider_id),sum)
+      names(temp) <- c("provider_id","N_h_predict")
 
       y_hosp <- merge(y_hosp,temp)
 
@@ -170,7 +185,7 @@ div_calc <- function(data,
       y_hosp$div[y_hosp$party_sys_id == m] <- NA
 
       # Print flag if degenerate cells
-      degenlist <- y_hosp_cell$cell[is.na(y_hosp_cell$div) & y_hosp_cell$hosp_id == k]
+      degenlist <- y_hosp_cell$cell[is.na(y_hosp_cell$div) & y_hosp_cell$provider_id == k]
       if (length(degenlist) > 0) {
         message("Note the following cells are degenerate: ",paste(degenlist, collapse = ", "))
 
@@ -178,7 +193,7 @@ div_calc <- function(data,
         #print(paste0("Total Diversion: ",totdiv))  # removed for CRAN, not really necessary info
       }
 
-      if (iter == 1) {out <- subset(y_hosp, select=c(hosp_id,hospital,party_sys_id,sys_id,N_h))}
+      if (iter == 1) {out <- subset(y_hosp, select=c(provider_id,provider,party_sys_id,sys_id,N_h))}
 
       #out[,paste0("div_",m,"_",k)] <- y_hosp$div
       out[,paste0("div_from_",k)] <- y_hosp$div
@@ -189,13 +204,13 @@ div_calc <- function(data,
 
   # sort for return of hospital-level diversions
   out$party_sys_id[out$party_sys_id == 0] <- NA
-  out <- out[order(out$party_sys_id,out$sys_id,out$hosp_id),]
+  out <- out[order(out$party_sys_id,out$sys_id,out$provider_id),]
 
   # also calculate system-level diversion
   out2 <- out
   party_sys_list <- sort(unique(out$party_sys_id[!is.na(out$party_sys_id)]))
   for (m in party_sys_list) {
-    party_hosp_list <- sort(unique(out$hosp_id[out$party_sys_id==m]))
+    party_hosp_list <- sort(unique(out$provider_id[out$party_sys_id==m]))
     ct <- out$N_h[out2$party_sys_id==m & !is.na(out2$party_sys_id)]
     varnames <- paste("div_from_", party_hosp_list, sep="")
 
@@ -204,21 +219,7 @@ div_calc <- function(data,
   }
 
 
-  # Return List of Outputs
-  #names(out)[names(out) == "cell"] <- cell
-  #names(out2)[names(out2) == "cell"] <- cell
-  #names(out)[names(out) == "hosp_id"] <- hosp_id
-  #names(out2)[names(out2) == "hosp_id"] <- hosp_id
-  #names(out)[names(out) == "hospital"] <- hospital
-  #names(out2)[names(out2) == "hospital"] <- hospital
-  #names(out)[names(out) == "sys_id"] <- sys_id
-  #names(out2)[names(out2) == "sys_id"] <- sys_id
-  #names(out)[names(out) == "party_ind"] <- party_ind
-  #names(out2)[names(out2) == "party_ind"] <- party_ind
-  #names(out)[names(out) == "count"] <- count
-  #names(out2)[names(out2) == "count"] <- count
-
-  newList <- list("hosp_level" = out, "sys_level" = out2)
+  newList <- list("provider_level" = out, "sys_level" = out2)
   return(newList)
 }
 
