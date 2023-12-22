@@ -230,6 +230,11 @@ div_calc <- function(data,
   # remove var party_sys_id from output. Used to sort the output matrix.
   out$party_sys_id <- NULL
   out2$party_sys_id <- NULL
+  # rename column headings in output to be supplied var names
+  names(out)[names(out) == "provider_id"] <- provider_id
+  names(out)[names(out) == "provider"] <- provider
+  names(out2)[names(out2) == "provider_id"] <- provider_id
+  names(out2)[names(out2) == "provider"] <- provider
 
   newList <- list("provider_level" = out, "sys_level" = out2)
   return(newList)
