@@ -227,6 +227,9 @@ div_calc <- function(data,
     out2[varnames] <- NULL
   }
 
+  # remove var party_sys_id from output. Used to sort the output matrix.
+  out$party_sys_id <- NULL
+  out2$party_sys_id <- NULL
 
   newList <- list("provider_level" = out, "sys_level" = out2)
   return(newList)
