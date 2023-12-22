@@ -203,8 +203,7 @@ div_calc <- function(data,
 
       if (iter == 1) {out <- subset(y_hosp, select=c(provider_id,provider,party_sys_id,sys_id,N_h))}
 
-      #out[,paste0("div_",m,"_",k)] <- y_hosp$div
-      out[,paste0("div_from_",k)] <- y_hosp$div
+      out[,paste0("div_from_",k)] <- round(y_hosp$div,3)
 
     }
 
@@ -222,7 +221,9 @@ div_calc <- function(data,
     ct <- out$N_h[out2$party_sys_id==m & !is.na(out2$party_sys_id)]
     varnames <- paste("div_from_", party_hosp_list, sep="")
 
-    out2[,paste0("div_from_sys_",m)] <- (rowSums(as.matrix(out[varnames]) %*% diag(ct, nrow = length(ct))))  / (sum(ct))
+    out2[,paste0("div_from_sys_",m)] <- round(
+      (rowSums(as.matrix(out[varnames]) %*% diag(ct, nrow = length(ct))))  / (sum(ct)),
+      3)
     out2[varnames] <- NULL
   }
 
