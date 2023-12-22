@@ -101,6 +101,15 @@ div_calc <- function(data,
   # Temp deprecation checks for hosp_id and provider_id. Remove this eventually.
   # check if provider_id is default and hosp_id is present, then rename hosp_id
   # to provider_id and print a warning message about deprecation.
+  if (! (is.na(hosp_id))) {
+    provider_id <- hosp_id
+    warning("hosp_id variable input is deprecated. Switch var name to provider_id.")
+  }
+  if (! (is.na(hospital))) {
+    provider <- hospital
+    warning("hospital variable input is deprecated. Switch var name to provider.")
+  }
+
   if (!(provider_id %in% names(data)) & ("hosp_id" %in% names(data))) {
     provider_id <- "hosp_id"
     warning("hosp_id variable input is deprecated. Switch var name to provider_id.")
@@ -109,14 +118,7 @@ div_calc <- function(data,
     provider <- "hospital"
     warning("hospital variable input is deprecated. Switch var name to provider.")
   }
-  if (! (is.na(hosp_id))) {
-    provider_id <- hosp_id
-    warning("hosp_id variable input is deprecated. Switch var name to provider_id.")
-  }
-  if (! (is.na(hospital))) {
-    hospital <- provider
-    warning("hospital variable input is deprecated. Switch var name to provider.")
-  }
+
 
   # Updated var checks
   if (! cell %in% names(data)) { stop('Variable "cell" required in input dataset')}
