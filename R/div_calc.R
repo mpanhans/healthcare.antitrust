@@ -16,9 +16,9 @@
 #'   Default variable name is \code{provider}.
 #' @param sys_id Name of variable specifying (numeric) system identifier.
 #'   Default variable name is \code{sys_id}.
-#' @param party_ind Name of indicator variable for whether hospital is a
-#'   merging party from which diversions should be calculated. Default
-#'   variable name is \code{party_ind}.
+#' @param focal_sys_id numeric; list of sys_id's specifying systems of interest
+#'   for which diversions will be calculated from. For a merger, this will
+#'   typically be the system identifies of the merging parties.
 #' @param count Name of variable indicating the number of admissions
 #'   represented by the observation. Set = 1 for every row if each
 #'   observation represents one admission.
@@ -54,12 +54,8 @@
 #' outList <- cell_defn(discharge_data,th,layers)
 #' D0 <- outList$assigned
 #'
-#' D0$party_ind <- 0
-#' D0$party_ind[D0$hosp_id==1] <- 1
-#' D0$party_ind[D0$hosp_id==2] <- 1
-#' D0$party_ind[D0$hosp_id==5] <- 1
-#'
-#' out <- div_calc(D0)
+#' out <- div_calc(D0, provider_id = "hosp_id", provider = "hospital",
+#'           focal_sys_id = c(1,5))
 #'
 #' @importFrom stats aggregate ave
 #' @importFrom methods is
@@ -83,6 +79,7 @@ div_calc <- function(data,
                      provider_id = "provider_id",
                      provider = "provider",
                      sys_id = "sys_id",
+                     focal_sys_id = NULL,
                      party_ind = "party_ind",
                      count = "count",
                      dropDegenerateCell = TRUE,
@@ -125,7 +122,6 @@ div_calc <- function(data,
   if (! provider_id %in% names(data)) { stop('Variable "provider_id" required in input dataset')}
   if (! provider %in% names(data)) { stop('Variable "provider" required in input dataset')}
   if (! sys_id %in% names(data)) { stop('Variable "sys_id" required in input dataset')}
-  if (! party_ind %in% names(data)) { stop('Variable "party_ind" required in input dataset')}
   if (! count %in% names(data)) { stop('Variable "count" required in input dataset')}
 
   # check provider names and id's uniquely match
@@ -134,9 +130,22 @@ div_calc <- function(data,
   #if (length(unique(check$provider)) != length(check$provider)) {warning('Error: provider name associated with multiple provider_ids')}
 
 
-  iter <- 0
+  # focal system indicator. Later, deprecate the old party_ind method
+  # IF focal_sys_id is given, use that to define party_ind
+  if (!(is.null(focal_sys_id))) {
+    data$party_ind <- data[[sys_id]] %in% focal_sys_id
+    party_ind <- "party_ind"
+  }
+  # IF focal_sys_id is missing, check for party_ind variable in df.
+  # if even that is missing, throw error. But error that focal_sys_id needed
+  if (is.null(focal_sys_id)) {
+    if (! party_ind %in% names(data)) { stop('Variable focal_sys_id required')}
+  }
+
   data$party_sys_id <- data[[party_ind]]*data[[sys_id]]
   party_sys_list <- sort(unique(data$party_sys_id[data$party_sys_id > 0]))
+
+  iter <- 0
 
   for (m in party_sys_list) {
     # Calculate cell-specific hospital diversion ratios
