@@ -91,29 +91,25 @@ We are now able to calculate diversion ratios based on the cell definitions.
 
 Once observations have been assigned to cells, we can now calculate diversion ratios with the function `div_calc`. Within each cell $c$, the diversion from a hospital $k$ to hospital $h$ is given by $d^c_{k,h} = \frac{s^c_h}{1 - s^c_{m(k)}}$ where $s^c_h$ is the share of cell $c$ admissions to hospital $h$, and $s^c_{m(k)}$ is the share of cell $c$ admissions at hospital $k$ or any other hospital in the same system as $k$. The overall diversions are then calculated by aggregating over cells (See Raval, Rosenbaum, and Tenn (2017) for details.)
 
-The required variables in the input dataframe are `cell`, which has been defined by the `cell_defn` function, as well as provider and system identifiers: `provider_id`, `Provider`, `sys_id`, and `System`. The function also requires `count`, which is created by `cell_defn` if it does not exist.
+The required variables in the input dataframe are `cell`, which has been defined by the `cell_defn` function, as well as provider and system identifiers: `provider_id`, `provider`, `sys_id`, and `system`. The function also requires `count`, which is created by `cell_defn` if it does not exist.
 
-Finally, we need to specify an indicator for the set of hospitals we are interested in diversions among, for example the hospitals that are parties in a proposed merger. The variable to indicate such hospitals is `party_ind`, and these are the hospitals for which diversion ratios will be calculated. We are interested in studying a proposed merger including hospitals 1, 2, and 5, and so we assign them the party indicator variable.
-
-```{r}
-D0$party_ind <- 0
-D0$party_ind[D0$hosp_id==1] <- 1
-D0$party_ind[D0$hosp_id==2] <- 1
-D0$party_ind[D0$hosp_id==5] <- 1
-```
+Finally, we need to specify an indicator for the set of hospitals we are interested in diversions from. In the analysis of a merger, this will typically be the hospitals that are parties to the proposed merger. The variable to indicate such systems is `focal_sys_id`, which should be a numeric vector listing the `sys_id`'s of the systems of interest. Diversion ratios will be calculated for providers belonging to the focal systems. Since in this example we are interested in studying a proposed merger including Systems 1 and 5, we define the variable accordingly.
 
 Now we can calculate diversions using the `div_calc` function.
 
 ```{r}
-out <- div_calc(D0, provider_id = "hosp_id", provider = "hospital")
+focal_systems <- c(1,5)
+
+out <- div_calc(D0, provider_id = "hosp_id", provider = "hospital",
+                focal_sys_id = focal_systems)
 ```
 
 <!-- The function prints the `hosp_id` of each hospital for which diversion is calculated. -->
 
-The function `div_calc` returns a list with two components, the first is a matrix of hospital-level diversions and the second is a matrix aggregated to system-level diversions. The hospital-level matrix gives diversions from each of the merging hospitals to all other hospitals. The diversions should sum to 1. We can verify that our diversions sum to one for Hospital 1:
+The function `div_calc` returns a list with two components, the first is a matrix of provider-level diversions and the second is a matrix aggregated to system-level diversions. The provider-level matrix gives diversions from each of the merging providers to all other providers The diversions should sum to 1. We can verify that our diversions sum to one for Hospital 1:
 
 ```{r}
-divratio_hosp <- out$hosp_level
+divratio_hosp <- out$provider_level
 sum(divratio_hosp$div_from_1, na.rm = TRUE)
 ```
 
@@ -142,21 +138,25 @@ To calculate the change in WTP resulting from a merger, first note the general f
 
 $WTP_c(M) = \ln \frac{1}{1- \sum_{j \in M} s_j^c}$
 
-Aggregating across cells gives the population WTP. The changing in WTP from a merger can then be given as the WTP of the post-merger system minus the WTP of the sum of the systems pre-merger. If we denote by $M$ the hypothetical post-merger system and $M_1$ and $M_2$ the systems before they merge, then as a percentage increase the change in willingness-to-pay is given by $\Delta WTP = \frac{WTP(M) - (WTP(M_1) + WTP(M_2)) }{WTP(M_1) + WTP(M_2)}$
+Aggregating across cells gives the population WTP. The change in WTP from a merger can then be given as the WTP of the post-merger system minus the WTP of the sum of the systems pre-merger. If we denote by $M$ the hypothetical post-merger system and $M_1$ and $M_2$ the systems before they merge, then as a percentage increase the change in willingness-to-pay is given by $\Delta WTP = \frac{WTP(M) - (WTP(M_1) + WTP(M_2)) }{WTP(M_1) + WTP(M_2)}$
 
 To implement this calculation using the `wtp_calc` function, we calculate the WTP for both systems pre-merger as well as for a hypothetical combined system.
 
 ```{r}
 out <- wtp_calc(D0)
-y_pre <- subset(out, party == 1)
+y_pre <- subset(out, sys_id %in% focal_systems)
 
 D0_post <- D0
-D0_post$sys_id[D0_post$party_ind == 1] <- 1
+D0_post$sys_id[D0_post$sys_id == 5] <- 1
 
 out <- wtp_calc(D0_post)
-y_post <- subset(out, party == 1)
+y_post <- subset(out, sys_id == 1)
 
-y_pre <- aggregate(list(WTP_s = y_pre$WTP_s, WTP_s_wt = y_pre$WTP_s_wt, N_s=y_pre$N_s),by=list(y_party=y_pre$party),sum)
+y_pre$sys_id <- 1
+y_pre <- aggregate(list(WTP_s = y_pre$WTP_s, WTP_s_wt = y_pre$WTP_s_wt, N_s=y_pre$N_s),by=list(y_party=y_pre$sys_id),sum)
+
+y_post$WTP_s
+y_pre$WTP_s
 
 print("% Change in WTP")
 print((y_post$WTP_s-y_pre$WTP_s)/(y_pre$WTP_s)*100)
