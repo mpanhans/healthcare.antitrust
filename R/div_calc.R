@@ -28,6 +28,9 @@
 #'   If FALSE, any such individuals will be assigned to the outside option,
 #'   but still included in the denominator, so that the inside-option diversion
 #'   will total less than 100  percent.
+#' @param hosp_id deprecated; use provider_id instead.
+#' @param hospital deprecated; use provider instead.
+#' @param party_ind deprecated; use focal_sys_id instead.
 #'
 #' @returns A list with two components. The first component, `provider_level`,
 #'  is a matrix giving provider-level diversions from party providers to
