@@ -3,9 +3,8 @@
 #' This function calculates the system-level Willingness-To-Pay.
 #'
 #' @param data Dataset of hospital discharges. Required variables:
-#'   \code{cell}, \code{sys_id}, \code{count}, and
-#'   \code{weight}. Use other function arguments to
-#'   indicate alternative variable names to the defaul names.
+#'   \code{cell} and \code{sys_id}. Use other function arguments to
+#'   indicate alternative variable names to the default names.
 #' @param cell Name of variable specifying cell to which each observation
 #'   has been allocated. Default variable name is \code{cell}. Can be
 #'   created by \code{cell_defn} function.
@@ -14,7 +13,7 @@
 #' @param count Name of variable indicating the number of admissions
 #'   represented by the observation. Set = 1 for every row if each
 #'   observation represents one admission.
-#' @param weight The designated weight of admission; =1 if
+#' @param weight Name of variable indicating designated weight of admission; =1 if
 #'   observations should be equally weighted.
 #' @param dropDegenerateCell logical; specifies how to treat cells with a
 #'   100 percent within-system share. If TRUE, observations in degenerate,
@@ -71,6 +70,10 @@ wtp_calc <- function(data,
                      count = "count",
                      weight = "weight",
                      dropDegenerateCell = TRUE) {
+
+  ## Error checks
+  if (! cell %in% names(data)) { stop('Variable "cell" required in input dataset')}
+  if (! sys_id %in% names(data)) { stop('Variable "sys_id" required in input dataset')}
 
   ## allow weight to be named or, if missing, set = 1.
   if (! weight %in% names(data)) { data$weight  <- 1}
