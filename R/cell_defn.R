@@ -12,6 +12,9 @@
 #'   more coarse layer.
 #' @param count Name of variable which indicates the number of admissions
 #'   represented by an observation. Default variable name is \code{count}.
+#' @param expandLayers logical; if only a single layer is given, setting this to
+#'   TRUE will expand the layer to a set of layers where each layer drops the
+#'   last variable in the list of the previous layer.
 #'
 #' @returns A list of data frames. The first component in the list, `assigned`,
 #' is the original data frame, with observations assigned to cells, and
@@ -52,7 +55,8 @@
 # Here could also go Roxygen comments with example tags (or links to
 # vignettes) and description of output. With tags @examples and @return.
 
-cell_defn <- function(data, min_size, layers, count = "count") {
+cell_defn <- function(data, min_size, layers, count = "count",
+                      expandLayers = FALSE) {
   # To address check() NOTEs
   cell_tot <- NULL
 
@@ -67,6 +71,20 @@ cell_defn <- function(data, min_size, layers, count = "count") {
   #if (!is(min_size,"numeric")) {warning('Input min cell size needs to be numeric'); stop()}
   #if (length(min_size)!=1) {warning('Input min cell size needs to be length 1'); stop()}
   #if (!is(layers,"list")) {warning('Input layers need to be a list'); stop()}
+
+  ## Expand layer if single layer given and expandLayers == TRUE
+  if ((length(layers)==1) & (expandLayers == TRUE)) {
+    layers <- layers[[1]]
+
+    powerlist <- vector("list", length(layers))
+    nextlist <- layers
+    for (i in 1:length(layers)){
+      powerlist[[i]] <- nextlist
+      nextlist <- nextlist[1:(length(nextlist)-1)]
+    }
+
+    layers <- powerlist
+  }
 
   ## Allow count variable name to be missing.
   if (! count %in% names(data)) {message('Assuming one admission per row. Variable count created.'); data$count  <- 1}
