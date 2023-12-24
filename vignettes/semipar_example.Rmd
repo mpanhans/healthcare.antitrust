@@ -41,7 +41,7 @@ layers <- list(list1)
 
 A minimum cell size threshold also needs to be set. Observations will be assigned to a cell only if that cell includes at least the minimum threshold number of observations. Let's set the minimum size to 15:
 ```{r}
-th <- 15
+th <- 25
 ```
 
 Then use `cell_defn` to allocate observations to cells, based on the variables in the layer. The one variable that needs to be included in the dataframe is a variable specifying the number of admissions represented by each observation. By default, this variable name is `count`, and if present the function `cell_defn` will use it as the admission count. Alternatively, another variable can be indicated as the count variable. If no variable is specified as the count and `count` is not present in the dataframe, `cell_defn` will assume each observation represents one admission and create a variable `count` always equal to one. We will go ahead and create the variable in our dataframe, and then run `cell_defn`.
@@ -154,9 +154,6 @@ y_post <- subset(out, sys_id == 1)
 
 y_pre$sys_id <- 1
 y_pre <- aggregate(list(WTP_s = y_pre$WTP_s, WTP_s_wt = y_pre$WTP_s_wt, N_s=y_pre$N_s),by=list(y_party=y_pre$sys_id),sum)
-
-y_post$WTP_s
-y_pre$WTP_s
 
 print("% Change in WTP")
 print((y_post$WTP_s-y_pre$WTP_s)/(y_pre$WTP_s)*100)
