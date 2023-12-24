@@ -4,7 +4,7 @@
 \alias{cell_defn}
 \title{Allocate Observations to Cells}
 \usage{
-cell_defn(data, min_size, layers, count = "count")
+cell_defn(data, min_size, layers, count = "count", expandLayers = FALSE)
 }
 \arguments{
 \item{data}{Dataset of discharges.}
@@ -19,6 +19,10 @@ more coarse layer.}
 
 \item{count}{Name of variable which indicates the number of admissions
 represented by an observation. Default variable name is \code{count}.}
+
+\item{expandLayers}{logical; if only a single layer is given, setting this to
+TRUE will expand the layer to a set of layers where each layer drops the
+last variable in the list of the previous layer.}
 }
 \value{
 A list of data frames. The first component in the list, \code{assigned},

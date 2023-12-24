@@ -7,17 +7,20 @@
 div_calc(
   data,
   cell = "cell",
-  hosp_id = "hosp_id",
-  hospital = "hospital",
+  provider_id = "provider_id",
+  provider = "provider",
   sys_id = "sys_id",
+  focal_sys_id = NULL,
   party_ind = "party_ind",
   count = "count",
-  dropDegenerateCell = TRUE
+  dropDegenerateCell = TRUE,
+  hosp_id = NA,
+  hospital = NA
 )
 }
 \arguments{
-\item{data}{Dataset of hospital discharges, with required variables:
-\code{cell}, \code{hosp_id}, \code{hospital}, \code{sys_id},
+\item{data}{Dataset of patient choices, with required variables:
+\code{cell}, \code{provider_id}, \code{hospital}, \code{sys_id},
 \code{party_ind}, \code{count}. Use other function arguments to
 indicate alternative variable names to the default names.}
 
@@ -25,18 +28,18 @@ indicate alternative variable names to the default names.}
 has been allocated. Default variable name is \code{cell}. Can be
 created by \code{cell_defn} function.}
 
-\item{hosp_id}{Name of variable specifying (numeric) hospital
-identifier. Default variable name is \code{hosp_id}.}
+\item{provider_id}{Name of variable specifying (numeric) provider
+identifier. Default variable name is \code{provider_id}.}
 
-\item{hospital}{Name of variable specifying (string) hospital name.
-Default variable name is \code{hospital}.}
+\item{provider}{Name of variable specifying (string) provider name.
+Default variable name is \code{provider}.}
 
 \item{sys_id}{Name of variable specifying (numeric) system identifier.
 Default variable name is \code{sys_id}.}
 
-\item{party_ind}{Name of indicator variable for whether hospital is a
-merging party from which diversions should be calculated. Default
-variable name is \code{party_ind}.}
+\item{focal_sys_id}{numeric; list of sys_id's specifying systems of interest
+for which diversions will be calculated from. For a merger, this will
+typically be the system identifies of the merging parties.}
 
 \item{count}{Name of variable indicating the number of admissions
 represented by the observation. Set = 1 for every row if each
@@ -50,21 +53,21 @@ but still included in the denominator, so that the inside-option diversion
 will total less than 100  percent.}
 }
 \value{
-A list with two components. The first component, \code{hosp_level},
-is a matrix giving hospital-level diversions from party hospitals to
-all other hospitals. The second object, \code{sys_level}, is a matrix that
-aggregates party hospitals to systems, thus giving diversions from party
-systems to all other hospitals.
+A list with two components. The first component, \code{provider_level},
+is a matrix giving provider-level diversions from party providers to
+all other providers The second object, \code{sys_level}, is a matrix that
+aggregates party providers to systems, thus giving diversions from party
+systems to all other providers
 }
 \description{
-Calculates hospital-level diversion ratios, once cells have been
+Calculates provider-level diversion ratios, once cells have been
 defined.
 }
 \details{
-For system-to-system diversions, set \code{hosp_id} and
-\code{hospital} equal to corresponding system-level identifiers.
-Patients are not allowed to divert to within-system alternative
-hospitals.
+For system-to-system diversions, set \code{provider_id} and
+\code{provider} equal to corresponding system-level identifiers.
+Diversions then reflect that patients are not allowed to divert to
+within-system alternative providers
 
 For more details see the example vignette by typing:
 \code{vignette("semipar_example", package = "healthcare.antitrust")}
@@ -80,11 +83,7 @@ discharge_data$count <- 1
 outList <- cell_defn(discharge_data,th,layers)
 D0 <- outList$assigned
 
-D0$party_ind <- 0
-D0$party_ind[D0$hosp_id==1] <- 1
-D0$party_ind[D0$hosp_id==2] <- 1
-D0$party_ind[D0$hosp_id==5] <- 1
-
-out <- div_calc(D0)
+out <- div_calc(D0, provider_id = "hosp_id", provider = "hospital",
+          focal_sys_id = c(1,5))
 
 }

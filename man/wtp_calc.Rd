@@ -8,7 +8,6 @@ wtp_calc(
   data,
   cell = "cell",
   sys_id = "sys_id",
-  party_ind = "party_ind",
   count = "count",
   weight = "weight",
   dropDegenerateCell = TRUE
@@ -16,9 +15,8 @@ wtp_calc(
 }
 \arguments{
 \item{data}{Dataset of hospital discharges. Required variables:
-\code{cell}, \code{sys_id}, \code{party_ind}, \code{count}, and
-\code{weight}. Use other function arguments to
-indicate alternative variable names to the defaul names.}
+\code{cell} and \code{sys_id}. Use other function arguments to
+indicate alternative variable names to the default names.}
 
 \item{cell}{Name of variable specifying cell to which each observation
 has been allocated. Default variable name is \code{cell}. Can be
@@ -27,15 +25,11 @@ created by \code{cell_defn} function.}
 \item{sys_id}{Name of variable specifying (numeric) system identifier.
 Default variable name is \code{sys_id}.}
 
-\item{party_ind}{Name of indicator variable for whether hospital is a
-party from which diversions should be calculated. Default variable
-name is \code{party_ind}.}
-
 \item{count}{Name of variable indicating the number of admissions
 represented by the observation. Set = 1 for every row if each
 observation represents one admission.}
 
-\item{weight}{The designated weight of admission; =1 if
+\item{weight}{Name of variable indicating designated weight of admission; =1 if
 observations should be equally weighted.}
 
 \item{dropDegenerateCell}{logical; specifies how to treat cells with a
@@ -46,8 +40,7 @@ hospital have the share set to 99.0 percent.}
 }
 \value{
 A data frame with the number of rows equal to the number of systems
-in the input data frame, and the following variables: \code{party} indicates
-whether the system includes party hospitals, \code{sys_id} is the system
+in the input data frame, and the following variables: \code{sys_id} is the system
 identifier, \code{WTP_s} is the system's WTP, \code{N_s} is the number of admission
 for the system, and \code{WTP_s_wt} is the weighted WTP for the system
 if the weight input is provided.
@@ -78,11 +71,6 @@ discharge_data$count <- 1
 
 outList <- cell_defn(discharge_data,th,layers)
 D0 <- outList$assigned
-
-D0$party_ind <- 0
-D0$party_ind[D0$hosp_id==1] <- 1
-D0$party_ind[D0$hosp_id==2] <- 1
-D0$party_ind[D0$hosp_id==5] <- 1
 
 out <- wtp_calc(D0)
 
