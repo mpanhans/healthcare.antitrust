@@ -41,6 +41,8 @@ Default variable name is \code{sys_id}.}
 for which diversions will be calculated from. For a merger, this will
 typically be the system identifies of the merging parties.}
 
+\item{party_ind}{deprecated; use focal_sys_id instead.}
+
 \item{count}{Name of variable indicating the number of admissions
 represented by the observation. Set = 1 for every row if each
 observation represents one admission.}
@@ -51,6 +53,10 @@ percent share cells will be ignored in the diversion ratio calculation.
 If FALSE, any such individuals will be assigned to the outside option,
 but still included in the denominator, so that the inside-option diversion
 will total less than 100  percent.}
+
+\item{hosp_id}{deprecated; use provider_id instead.}
+
+\item{hospital}{deprecated; use provider instead.}
 }
 \value{
 A list with two components. The first component, \code{provider_level},
