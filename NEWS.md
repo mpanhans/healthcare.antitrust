@@ -1,3 +1,8 @@
+
+# healthcare.antitrust 0.1.5
+
+* add function impliedshare_calc() to calculate implied market shares
+
 # healthcare.antitrust 0.1.4
 
 * change input variable names for div_calc() to more generic provider_id and provider instead of hosp_id and hospital
