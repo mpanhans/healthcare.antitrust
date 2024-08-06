@@ -126,6 +126,40 @@ If the total diversion for a given hospital does not sum to 1, that means that a
 By default, `div_calc` will drop any degenerate cells so that diversions will still sum to 1. If a degenerate cell exists and the `dropDegenerateCell` option is set to `FALSE`, the diversion for a hospital may sum to less than one because degenerate cells will not be dropped. A notification flag will be printed whenever a degenerate cell exists for a given hospital.
 
 
+# Implied market shares
+
+Once diversion ratios have been estimated, they can be used to calculate implied market shares. The function `impliedshare_calc` can be used.
+
+First, the function can be used to find the implied market size, $M$.
+
+```{r}
+ 
+div_from_1 <- out$provider_level$div_from_1
+div_from_1[is.na(div_from_1)] <- 0
+ 
+ find_M <- optimize(f = impliedshare_calc, lower = 50, upper = 7250,
+    div_from = div_from_1, 
+    quantities=out$provider_level$N_h, 
+    focal=1,
+    div_to=c(0,0,out$provider_level$div_from_5[1],0,0,0,0,0), 
+    same_nest = c(3), returnM = TRUE)
+
+ find_M
+ M_implied <- find_M$minimum
+ 
+```
+
+Then, use the implied market size to determine the implied shares for each hospital in the market.
+
+```{r}
+ impliedshare_calc(M = M_implied, div_from = div_from_1, 
+    quantities=out$provider_level$N_h, 
+    focal=1,
+    div_to=c(0,0,out$provider_level$div_from_5[1],0,0,0,0,0), 
+    same_nest = c(3) )
+```
+
+
 # Willingness-to-pay calculation
 
 Once observations have been assigned to cells, one can also use the function `wtp_calc` to calculate the willingness-to-pay (WTP) of a hospital system (see Capps, Dranove, and Satterthwaite (2003) "Competition and Market Power in Option Demand Markets" <https://www.jstor.org/stable/1593786>). This can be used to estimate the change in WTP that would occur after a merger, using the discharge data as we have been using.
