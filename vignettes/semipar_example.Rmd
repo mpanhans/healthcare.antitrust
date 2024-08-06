@@ -130,33 +130,30 @@ By default, `div_calc` will drop any degenerate cells so that diversions will st
 
 Once diversion ratios have been estimated, they can be used to calculate implied market shares. The function `impliedshare_calc` can be used.
 
-First, the function can be used to find the implied market size, $M$.
+For the implied market size, in this case we might set the value to the number of admissions in the dataset. 
 
 ```{r}
  
-div_from_1 <- out$provider_level$div_from_1
-div_from_1[is.na(div_from_1)] <- 0
- 
- find_M <- optimize(f = impliedshare_calc, lower = 50, upper = 7250,
-    div_from = div_from_1, 
-    quantities=out$provider_level$N_h, 
-    focal=1,
-    div_to=c(0,0,out$provider_level$div_from_5[1],0,0,0,0,0), 
-    same_nest = c(3), returnM = TRUE)
-
- find_M
- M_implied <- find_M$minimum
+M_implied <- sum(out$provider_level$N_h)
  
 ```
 
-Then, use the implied market size to determine the implied shares for each hospital in the market.
+Then, use the implied market size and estimated diversion ratios to determine the implied shares for each hospital in the market.
 
 ```{r}
- impliedshare_calc(M = M_implied, div_from = div_from_1, 
+div_from_1 <- out$provider_level$div_from_1
+div_from_1[is.na(div_from_1)] <- 0
+
+out_share <- impliedshare_calc(M = M_implied, div_from = div_from_1, 
     quantities=out$provider_level$N_h, 
     focal=1,
     div_to=c(0,0,out$provider_level$div_from_5[1],0,0,0,0,0), 
     same_nest = c(3) )
+
+out_share
+
+# verify that implied shares sum to one
+sum(out_share$s_implied)
 ```
 
 
