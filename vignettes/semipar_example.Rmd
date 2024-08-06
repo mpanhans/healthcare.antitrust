@@ -22,7 +22,7 @@ This vignette shows how to use healthcare.antitrust to implement the semiparamet
 
 The method is illustrated using a simulated dataset of hospital discharges that is included with the healthcare.antitrust package. This simulated dataset mimics the basic structure of real hospital discharge data, with each observation including a hospital identifier and patient characteristics (DRG diagnosis code, patient age, and patient zip code of residence). The data includes 1,200 discharges from eight hospitals. 
 
-Suppose that the analyst is interested in estimating diversion ratios between hospitals in System 1, which includes Hospitals 1 and 2, and Hospital 5, which is an independent hospital. This vignette will show how to implement each step to arrive at the estimate.
+Suppose that the analyst is interested in estimating diversion ratios between hospitals in System 1, which includes Hospitals 1 and 2, and Hospital 8, which is an independent hospital. This vignette will show how to implement each step to arrive at the estimate.
 
 # Cell definitions
 The first step is to assign observations to 'cells,' within which the substitution proportional to share will be assumed to hold. This assignment of observations can be done with the `cell_defn` function. Begin by loading the example simulation dataset of hospital discharges:
@@ -39,7 +39,7 @@ list1 <- c("drg","age","zip5")
 layers <- list(list1)
 ```
 
-A minimum cell size threshold also needs to be set. Observations will be assigned to a cell only if that cell includes at least the minimum threshold number of observations. Let's set the minimum size to 15:
+A minimum cell size threshold also needs to be set. Observations will be assigned to a cell only if that cell includes at least the minimum threshold number of observations. Let's set the minimum size to 25:
 ```{r}
 th <- 25
 ```
@@ -93,12 +93,12 @@ Once observations have been assigned to cells, we can now calculate diversion ra
 
 The required variables in the input dataframe are `cell`, which has been defined by the `cell_defn` function, as well as provider and system identifiers: `provider_id`, `provider`, `sys_id`, and `system`. The function also requires `count`, which is created by `cell_defn` if it does not exist.
 
-Finally, we need to specify an indicator for the set of hospitals we are interested in diversions from. In the analysis of a merger, this will typically be the hospitals that are parties to the proposed merger. The variable to indicate such systems is `focal_sys_id`, which should be a numeric vector listing the `sys_id`'s of the systems of interest. Diversion ratios will be calculated for providers belonging to the focal systems. Since in this example we are interested in studying a proposed merger including Systems 1 and 5, we define the variable accordingly.
+Finally, we need to specify an indicator for the set of hospitals we are interested in diversions from. In the analysis of a merger, this will typically be the hospitals that are parties to the proposed merger. The variable to indicate such systems is `focal_sys_id`, which should be a numeric vector listing the `sys_id`'s of the systems of interest. Diversion ratios will be calculated for providers belonging to the focal systems. Since in this example we are interested in studying a proposed merger including Systems 1 and 8, we define the variable accordingly.
 
 Now we can calculate diversions using the `div_calc` function.
 
 ```{r}
-focal_systems <- c(1,5)
+focal_systems <- c(1,8)
 
 out <- div_calc(D0, provider_id = "hosp_id", provider = "hospital",
                 focal_sys_id = focal_systems)
@@ -130,24 +130,42 @@ By default, `div_calc` will drop any degenerate cells so that diversions will st
 
 Once diversion ratios have been estimated, they can be used to calculate implied market shares. The function `impliedshare_calc` can be used.
 
+First, find the implied market size that best fits the diversions. 
+
+<!--
 For the implied market size, in this case we might set the value to the number of admissions in the dataset. 
 
-```{r}
+# M_implied <- sum(out$provider_level$N_h)
+
+-->
+
+```{r message = FALSE}
  
-M_implied <- sum(out$provider_level$N_h)
- 
+
+
+div_from_1 <- out$provider_level$div_from_1
+div_from_1[is.na(div_from_1)] <- 0
+
+find_M <- optimize(f = impliedshare_calc, lower = 50, upper = 5000,
+                   div_from = div_from_1,
+                   quantities=out$provider_level$N_h,
+                   focal=1,
+                   div_to=c(0,0,out$provider_level$div_from_8[1],0,0,0,0,0),
+                   same_nest = c(3), returnM = TRUE)
+
+find_M
+M_implied <- find_M$minimum
+
 ```
 
 Then, use the implied market size and estimated diversion ratios to determine the implied shares for each hospital in the market.
 
 ```{r}
-div_from_1 <- out$provider_level$div_from_1
-div_from_1[is.na(div_from_1)] <- 0
 
 out_share <- impliedshare_calc(M = M_implied, div_from = div_from_1, 
     quantities=out$provider_level$N_h, 
     focal=1,
-    div_to=c(0,0,out$provider_level$div_from_5[1],0,0,0,0,0), 
+    div_to=c(0,0,out$provider_level$div_from_8[1],0,0,0,0,0), 
     same_nest = c(3) )
 
 out_share
@@ -178,7 +196,7 @@ out <- wtp_calc(D0)
 y_pre <- subset(out, sys_id %in% focal_systems)
 
 D0_post <- D0
-D0_post$sys_id[D0_post$sys_id == 5] <- 1
+D0_post$sys_id[D0_post$sys_id == 8] <- 1
 
 out <- wtp_calc(D0_post)
 y_post <- subset(out, sys_id == 1)
