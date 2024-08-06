@@ -61,8 +61,8 @@ impliedshare_calc <- function(M,div_from, quantities, focal, div_to,
   a_j <- div_from * (M - quantities[1]) / quantities
   a_j[focal] <- 1     ## focal product sets a_j = 1.
 
-  if(any(a_j > 1)){print("a_j outside of [0,1]")}
-  if(any(a_j < 0)){print("a_j outside of [0,1]")}
+  if(any(a_j > 1)){message("a_j outside of [0,1]")}
+  if(any(a_j < 0)){message("a_j outside of [0,1]")}
 
   ## Step 2: calculate implied shares
   s_implied <- (a_j * quantities)/M
