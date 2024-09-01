@@ -10,7 +10,7 @@ impliedshare_calc(
   quantities,
   focal,
   div_to,
-  same_nest,
+  reference_goods,
   returnM = FALSE
 )
 }
@@ -28,8 +28,8 @@ in the market.}
 \item{div_to}{Vector of diversions to the focal good from other
 goods in the market, with each element between 0 and 1.}
 
-\item{same_nest}{Vector indicating index of other goods in the same
-nest as the focal good, used to determine the market size.}
+\item{reference_goods}{Vector indicating non-focal good(s)
+with diversion to focal good known, used to determine the market size.}
 
 \item{returnM}{logical; default to FALSE, in which case function
 returns implied shares for each good in the market and corresponding
@@ -61,7 +61,7 @@ div_2_1 <- .50
 
 find_M <- optimize(f = impliedshare_calc, lower = 50, upper = 250,
    div_from=c(0,div_1_2), quantities=c(q_1,q_2), focal=1,
-   div_to=c(0,div_2_1), same_nest = c(2), returnM = TRUE)
+   div_to=c(0,div_2_1), reference_goods = c(2), returnM = TRUE)
 
 find_M
 M_implied <- find_M$minimum
@@ -69,6 +69,6 @@ M_implied <- find_M$minimum
 
 impliedshare_calc(M=M_implied,div_from=c(0,div_1_2),
    quantities=c(q_1,q_2),
-   focal=1, div_to=c(0,div_2_1),same_nest = c(2))
+   focal=1, div_to=c(0,div_2_1),reference_goods = c(2))
 
 }
