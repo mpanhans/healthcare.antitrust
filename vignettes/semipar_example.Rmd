@@ -151,7 +151,7 @@ find_M <- optimize(f = impliedshare_calc, lower = 50, upper = 5000,
                    quantities=out$provider_level$N_h,
                    focal=1,
                    div_to=c(0,0,out$provider_level$div_from_8[1],0,0,0,0,0),
-                   same_nest = c(3), returnM = TRUE)
+                   reference_goods = c(3), returnM = TRUE)
 
 find_M
 M_implied <- find_M$minimum
@@ -166,7 +166,7 @@ out_share <- impliedshare_calc(M = M_implied, div_from = div_from_1,
     quantities=out$provider_level$N_h, 
     focal=1,
     div_to=c(0,0,out$provider_level$div_from_8[1],0,0,0,0,0), 
-    same_nest = c(3) )
+    reference_goods = c(3) )
 
 out_share
 
