@@ -4,6 +4,7 @@
 # healthcare.antitrust
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 The goal of healthcare.antitrust is to provide a set of tools commonly
@@ -44,6 +45,7 @@ vignette("semipar_example", package = "healthcare.antitrust")
 # Disclaimer
 
 <!-- This software contains materials that originally came from the U.S. Federal Trade Commission (FTC) and is in the public domain. -->
+
 <!-- No warranty, expressed or implied, is made by the authors or the FTC as to the the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the authors or the FTC in connection therewith. -->
 
 Any views expressed in this software or documentation are those of the
@@ -51,12 +53,21 @@ authors and do not necessarily reflect those of the Federal Trade
 Commission or any individual Commissioner.
 
 <!-- What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so: -->
+
 <!-- ```{r cars} -->
+
 <!-- summary(cars) -->
+
 <!-- ``` -->
+
 <!-- You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. -->
+
 <!-- You can also embed plots, for example: -->
+
 <!-- ```{r pressure, echo = FALSE} -->
+
 <!-- plot(pressure) -->
+
 <!-- ``` -->
+
 <!-- In that case, don't forget to commit and push the resulting figure files, so they display on GitHub! -->
