@@ -58,7 +58,7 @@ impliedshare_calc <- function(M,div_from, quantities, focal, div_to,
   J <- length(quantities)
 
   ## Step 1: calculate a_j that matches diversions
-  a_j <- div_from * (M - quantities[1]) / quantities
+  a_j <- div_from * (M - quantities[focal]) / quantities
   a_j[focal] <- 1     ## focal product sets a_j = 1.
 
   if(any(a_j > 1)){message("a_j outside of [0,1]")}
