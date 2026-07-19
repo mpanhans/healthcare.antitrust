@@ -1,4 +1,8 @@
 
+# healthcare.antitrust 0.1.6
+
+* fix to impliedshare_calc()
+
 # healthcare.antitrust 0.1.5
 
 * add function impliedshare_calc() to calculate implied market shares
